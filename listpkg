@@ -1,0 +1,87 @@
+#!/bin/sh
+#-------------HEADER-----------------------------------------------------------|
+#AUTOR:
+#	Jefferson Rocha <lrcjefferson@gmail.com>
+#PROGRAM:
+#	Listpkg - List packages
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#------------------------------------------------------------------------------|
+
+# FUNCTIONS
+go_dir(){
+	cd /var/log/packages
+}
+
+
+# Options inline
+case ${1} in
+	--help)
+				cat << EOF
+Manual.
+To found a package run:
+$ listpkg PackageName
+
+---EXAMPLE:
+
+$ listpkg kdenlive
++==============================================================================
+| Package kdenlive (installed)
++==============================================================================
+
+---Or look more than one package:
+
+$ listpkg kdenlive leafpad libbluray noexitpackage
++==============================================================================
+| Package kdenlive (installed)
++==============================================================================
++==============================================================================
+| Package leafpad (installed)
++==============================================================================
++==============================================================================
+| Package libbluray (installed)
++==============================================================================
++==============================================================================
+| Package noexitpackage (not found)
++==============================================================================
+EOF
+exit 0
+	;;
+esac
+
+#--List packages, exist or no?
+go_dir		# Entry in directory of packages location.
+while [ -n "$1" ]; do
+	[ "$1" = "1" ] || [ "$1" = "@" ] && echo "Enter name package." && exit 1
+	package=$(ls ${1}* 2>&-)	# List packages
+	if [ "$?" -eq "0" ]; then
+		  cat << EOF
++==============================================================================
+| Package ${1} (installed)
++==============================================================================
+EOF
+	else
+		  cat << EOF
++==============================================================================
+| Package ${1} (not found)
++==============================================================================
+EOF
+	fi
+	shift
+done
+
